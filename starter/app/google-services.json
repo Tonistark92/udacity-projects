@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "983931153553",
+    "project_id": "last-remainder",
+    "storage_bucket": "last-remainder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983931153553:android:a3c226f0dda7587ef9e330",
+        "android_client_info": {
+          "package_name": "com.udacity.project4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983931153553-a9pkpokf0lg3otjn45m2g883i0944kpk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWT8H0U2jqBVJB16QA50-SlOWizwME6Vo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983931153553-a9pkpokf0lg3otjn45m2g883i0944kpk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983931153553:android:47b82171d42a5f70f9e330",
+        "android_client_info": {
+          "package_name": "com.udacity.project4.islam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983931153553-4v7qtnm8gqquc1bjk7qa4fjcujnt4tth.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udacity.project4.islam",
+            "certificate_hash": "c71cce16d4d736c66814cfb0dbf12b36eeff3e3b"
+          }
+        },
+        {
+          "client_id": "983931153553-a9pkpokf0lg3otjn45m2g883i0944kpk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWT8H0U2jqBVJB16QA50-SlOWizwME6Vo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983931153553-a9pkpokf0lg3otjn45m2g883i0944kpk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
