@@ -16,7 +16,7 @@ A Todo list app with location reminders that remind the user to do something whe
 
 ### Installation
 
-Step by step explanation of how to get a dev environment running.
+Step by step explanation of how to get a dev environment running ..
 
 ```
 1. To enable Firebase Authentication:
