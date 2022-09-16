@@ -32,16 +32,17 @@ class AuthenticationActivity : AppCompatActivity() {
             this,
             R.layout.activity_authentication
         )
+        // when the auth value chang effect here for navigate to remainder save or sign in
         viewModel.authState.observe(this, Observer { authenticationState ->
 
             when (authenticationState) {
-
+                // if he is authanticated so go forward to the location saved
                 AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                     startActivity(Intent(this, RemindersActivity::class.java))
                     finish()
                 }
                 else -> {
-
+                    // else ! sign in
                     binding.signinButton.setOnClickListener {
                         startSignIn()
                     }
@@ -68,15 +69,13 @@ class AuthenticationActivity : AppCompatActivity() {
 
 
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 Log.i(TAG, "Sign in unsuccessful ${response?.error?.errorCode}")
             }
         }
     }
 
-
+    // for starting sign in
     private fun startSignIn() {
 
         val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build())

@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseUser
 
 class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
     private val firebaseAuth = FirebaseAuth.getInstance()
-
+    // attatch listener for the auth state
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         value = firebaseAuth.currentUser
     }

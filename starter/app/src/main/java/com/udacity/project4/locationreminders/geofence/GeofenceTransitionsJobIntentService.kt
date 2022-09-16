@@ -29,17 +29,12 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         private const val TAG = "GeofenceTransitionsJob"
 
         fun enqueueWork(context: Context, intent: Intent) {
-            enqueueWork(
-                context,
-                GeofenceTransitionsJobIntentService::class.java, JOB_ID,
-                intent
-            )
+            enqueueWork(context, GeofenceTransitionsJobIntentService::class.java, JOB_ID, intent)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        // handling the geofencing transition events
-        // and send a notification to the user when he enters the geofence area
+        // handling the geofencing transition events and send a notification to the user when he enters the geofence area
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
@@ -77,7 +72,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
     }
 
 
-    //
+    // the notification fun
     private fun sendNotification(triggeringGeofences: List<Geofence>) {
         val requestId = triggeringGeofences[0].requestId
         //Get the local repository instance
