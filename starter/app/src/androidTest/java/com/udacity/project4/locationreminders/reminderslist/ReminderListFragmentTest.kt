@@ -91,7 +91,8 @@ class ReminderListFragmentTest {
                 latitude = 47.5456551,
                 longitude = 122.0101731)
     }
-
+    // we save the reminder and check if it is displayed on the fragment or not so we expect
+    // that the saved and the showed in the same
     @Test
     fun reminders_DisplayedInUi() = runBlockingTest{
 
@@ -110,7 +111,7 @@ class ReminderListFragmentTest {
         onView(withText(reminder.location)).check(matches(isDisplayed()))
 
     }
-
+    // we check if there is no lists if the icon for impty bahavior is displayed or not
     @Test
     fun noReminders_shows_noData() = runBlockingTest{
 
@@ -118,17 +119,19 @@ class ReminderListFragmentTest {
 
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
     }
-
+    // we check if we click on the floating action button will navigate
+    //to the save reminder or not
     @Test
     fun clickOnFabIcon_navigatesTo_saveReminderFragment() {
-        val scenario =
-                launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        //init the fragment
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+       //init the navController class
         val navController = mock(NavController::class.java)
 
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
-
+        //checking
         onView(withId(R.id.addReminderFAB)).perform(click())
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
     }

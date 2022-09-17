@@ -25,7 +25,6 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-    // TODO: Add testing implementation to the RemindersLocalRepository.kt
     private lateinit var database: RemindersDatabase
     private lateinit var repository: RemindersLocalRepository
 
@@ -58,7 +57,8 @@ class RemindersLocalRepositoryTest {
     fun cleanUp() {
         database.close()
     }
-
+    // we save the reminder as normal and get it back so we check with result class then
+    // check if the saved == the returned so we tested teh saving and getting by id
     @Test
     fun saveReminder_retrievesReminder() = runBlocking {
         // GIVEN - A new reminder saved in the database.
@@ -79,7 +79,9 @@ class RemindersLocalRepositoryTest {
         assertThat(result.data.longitude, `is`(reminder.longitude))
         assertThat(result.data.location, `is`(reminder.location))
     }
-
+    // testing that if the deleting all is really happening or not so we save one reminder that we have it's
+    // id then we delete all then check if the reminder with the id we know is still there or it
+    // the expected value  Reminder not found
     @Test
     fun deleteAllReminders_getReminderById() = runBlocking {
         val reminder = getReminder()

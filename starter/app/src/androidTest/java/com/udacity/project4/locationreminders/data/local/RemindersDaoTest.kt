@@ -37,12 +37,9 @@ class RemindersDaoTest {
     fun initDb() {
         // Using an in memory database so that the information stored here disappears when the
         // process is killed.
-        database = Room.inMemoryDatabaseBuilder(
-                getApplicationContext(),
-                RemindersDatabase::class.java
-        ).build()
+        database = Room.inMemoryDatabaseBuilder(getApplicationContext(), RemindersDatabase::class.java).build()
     }
-
+    // close the db after finishing
     @After
     fun closeDb() = database.close()
 
@@ -55,7 +52,10 @@ class RemindersDaoTest {
                 latitude = 47.5456551,
                 longitude = 122.0101731)
     }
-
+    // we first get reminder from getReminder and save it and then get it back by it's id so we test
+    // the saving and the fitching with id and we check that the data we saved is that what we
+    // inserted by retriving it by reminder's id then check what we expect that the
+    // data of the saved one is the retriedd one
     @Test
     fun insertReminderAndFindById() = runBlockingTest {
         val reminder = getReminder()

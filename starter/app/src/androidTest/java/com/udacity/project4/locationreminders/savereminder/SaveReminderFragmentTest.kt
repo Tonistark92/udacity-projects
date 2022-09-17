@@ -85,12 +85,12 @@ class SaveReminderFragmentTest {
 
     }
 
-
+    // testing if we press the save button while the title is impty
+    // will the snackbar will notify the user to fill it or not
     @Test
     fun noTitle_fails() {
         val navController = Mockito.mock(NavController::class.java)
-        val scenario =
-                launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
 
 
 
@@ -99,8 +99,7 @@ class SaveReminderFragmentTest {
         }
 
         onView(ViewMatchers.withId(R.id.saveReminder)).perform(ViewActions.click())
-        onView(withId(R.id.snackbar_text))
-                .check(matches(withText(R.string.err_enter_title)))
+        onView(withId(R.id.snackbar_text)).check(matches(withText(R.string.err_enter_title)))
 
     }
 
@@ -112,7 +111,8 @@ class SaveReminderFragmentTest {
                 latitude = 47.5456551,
                 longitude = 122.0101731)
     }
-
+    //testing if the we press the save button when all done (he really filled the location and the title i mean it is succeses navigation should accur)
+    //so the toast for the succeses saving should be showen
     @Test
     fun saveReminder_succeeds() {
        val reminder = getReminder()
@@ -120,8 +120,7 @@ class SaveReminderFragmentTest {
 
 
         val navController = Mockito.mock(NavController::class.java)
-        val scenario =
-                launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
 
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
@@ -133,11 +132,6 @@ class SaveReminderFragmentTest {
 
 
        saveReminderViewModel.saveReminder(reminder)
-
-        //Espresso.closeSoftKeyboard()
-
-       // onView(withId(R.id.saveReminder)).perform(ViewActions.click())
-      // onView(withText(saveReminderViewModel.showToast.getOrAwaitValue())).check(matches(withText(R.string.reminder_saved)))
 
        assertThat(saveReminderViewModel.showToast.getOrAwaitValue(), `is` ("Reminder Saved !"))
     }
