@@ -91,7 +91,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
                 map.isMyLocationEnabled = true
 
                 fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
-                    // Got last known location. In some rare situations this can be null.
+                    // Got last known location. and check if it is null or not .
+                    // as may be the location is closed or the premosions isn't granted
                     if (location != null) {
                         lastLocation = location
                         val currentLatLng = LatLng(location.latitude, location.longitude)
@@ -116,12 +117,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
     }
 
     private fun setPoiClickListener(map: GoogleMap) {
-
+        // Listener for the POI on the map
         map.setOnPoiClickListener { poi ->
 
             map.clear()
             POI = poi
-
+//            adding marker for the map
             val poiMarker = map.addMarker(
                 MarkerOptions()
                     .position(poi.latLng)
@@ -133,13 +134,16 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
 
     private fun setLocationClick(map: GoogleMap){
         map.setOnMapClickListener { latLng ->
+            // we first clear the map so the old mekers is cleared
             map.clear()
+            // create a snippet for the marker
             val snippet = String.format(
                 Locale.getDefault(),
                 getString(R.string.lat_long_snippet),
                 latLng.latitude,
                 latLng.longitude
             )
+            // adding the marker with the snippt
             map.addMarker(
                 MarkerOptions()
                     .position(latLng)
@@ -153,7 +157,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback{
 
 
     private fun AfterLocationPinned() {
-
+        // listener for the save button
         binding.saveButton.setOnClickListener{
 
 

@@ -8,8 +8,8 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()):
 
     private var wantReturnError = false
 
-    fun setShouldReturnError(shouldReturn: Boolean) {
-        this.wantReturnError = shouldReturn
+    fun setShouldReturnError(wantReturnError: Boolean) {
+        this.wantReturnError = wantReturnError
     }
     override suspend fun saveReminder(reminder: ReminderDTO) {
         reminders.add(reminder)
@@ -35,8 +35,10 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()):
     // and let is false and it will return the list
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
         if (wantReturnError){
+            // if we want to see the error case so let the wantReturnError true so will get the error
             return Result.Error("Reminders not found", 404)
         }else{
+            // this case for the Success return for the reminder
             return return Result.Success(ArrayList(reminders))
         }
         // is that what you wanted ?
@@ -58,13 +60,17 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()):
     //else we use the result's class inner class error  Result.Error("Reminder not found", 404)
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
         if(wantReturnError){
+            // if the boolean is true gets error
             return Result.Error("Error")
         }else{
+            //if not try to get the reminder by id
             val reminder = reminders.find { it.id == id }
 
             if (reminder != null) {
+                // if what we got from reminders.find is not null so return it by the util Result.Success
                  return Result.Success(reminder)
             } else {
+                //if it is null return error
                 return Result.Error("Reminder not found", 404)
             }
         }

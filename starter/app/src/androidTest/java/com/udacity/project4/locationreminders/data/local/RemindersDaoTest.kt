@@ -59,6 +59,7 @@ class RemindersDaoTest {
     @Test
     fun insertReminderAndFindById() = runBlockingTest {
         val reminder = getReminder()
+        // we use the dataase's dao to save the reminder
         database.reminderDao().saveReminder(reminder)
 
         // WHEN - Get the reminder by (id) from the database.

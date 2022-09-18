@@ -95,16 +95,16 @@ class ReminderListFragmentTest {
     // that the saved and the showed in the same
     @Test
     fun reminders_DisplayedInUi() = runBlockingTest{
-
+        // we get the reminder
         val reminder = getReminder()
         runBlocking{
-
+//            we save it
             repository.saveReminder(reminder)
         }
 
-
+        //we launch for testing if the reminders is diplayed or not in the ReminderListFragment
         launchFragmentInContainer<ReminderListFragment>(Bundle.EMPTY, R.style.AppTheme)
-
+        //check the views for the data is exists in each field
         onView(withId(R.id.noDataTextView)).check(matches(not(isDisplayed())))
         onView(withText(reminder.title)).check(matches(isDisplayed()))
         onView(withText(reminder.description)).check(matches(isDisplayed()))
@@ -114,9 +114,9 @@ class ReminderListFragmentTest {
     // we check if there is no lists if the icon for impty bahavior is displayed or not
     @Test
     fun noReminders_shows_noData() = runBlockingTest{
-
+        // we launch the fragment (ReminderListFragment) to check if the image for impty behavior is showed or not
         launchFragmentInContainer<ReminderListFragment>(Bundle.EMPTY, R.style.AppTheme)
-
+        //checking if the image for impty behavior is showed or not
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
     }
     // we check if we click on the floating action button will navigate
@@ -127,11 +127,11 @@ class ReminderListFragmentTest {
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
        //init the navController class
         val navController = mock(NavController::class.java)
-
+        // attach the navController to fragment
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
-        //checking
+        //checking for the button will navigate or nor to the SaveReminder
         onView(withId(R.id.addReminderFAB)).perform(click())
         verify(navController).navigate(ReminderListFragmentDirections.toSaveReminder())
     }

@@ -69,9 +69,11 @@ class SaveReminderViewModelTest {
     // we her test the normal saving in teh database as we expect after saving it to return Reminder Saved
     @Test
     fun saveReminder() {
-
+        // we get one reminder from the getReminder
         val reminder = getReminder()
+        // the view model saves the reminder
         saveReminderViewModel.saveReminder(reminder)
+        // we assert for the message Reminder Saved after saving (for success insertion)
         assertThat(saveReminderViewModel.showToast.getOrAwaitValue(), `is`("Reminder Saved !"))
     }
     // we test if the saving the remainder that has no title which is not gonna happen because the
@@ -80,15 +82,18 @@ class SaveReminderViewModelTest {
     // so it is at least notnullvalue and the snakebar will massage for enter the title
     @Test
     fun saveReminder_withoutTitle() {
-
+        // we creat fake reminder
         val reminder = ReminderDataItem(
                 title = "tit",
                 description = "desc",
                 location = "loco",
                 latitude = 47.5456551,
                 longitude = 122.0101731)
-
+        // the view model check and save the reminder and shouldn't save couse in
+        // validate_SaveReminder we check before pass the reminder for the save fun in the validateEnteredData
+        // and in this fun we check for the title and location in existis
         saveReminderViewModel.validate_SaveReminder(reminder)
+        // we wish to return non null cause in validateEnteredData return boolean so it will return false in this case
         assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), notNullValue())
 
     }
@@ -98,12 +103,15 @@ class SaveReminderViewModelTest {
     fun showLoading() = runBlocking {
 
         val reminder = getReminder()
-
+        // we pause the Dispatcher
         mainCoroutineRule.pauseDispatcher()
+        // we save the reminder
         saveReminderViewModel.validate_SaveReminder(reminder)
+        // we wish the fun getOrAwaitValue return true as the dipature is paused so it is loading now
         assertThat(saveReminderViewModel.showLoading.getOrAwaitValue(), CoreMatchers.`is`(true))
-
+        //we resume the Dispatcher
         mainCoroutineRule.resumeDispatcher()
+        // so the loading would be done so the showLoading.getOrAwaitValue() should return false now
         assertThat(saveReminderViewModel.showLoading.getOrAwaitValue(), CoreMatchers.`is`(false))
 
 
@@ -114,15 +122,19 @@ class SaveReminderViewModelTest {
     // the sme rest for the location test
     @Test
     fun saveReminder_withoutlocation() {
-
+        // we create fake reminder
         val reminder = ReminderDataItem(
                 title = "look",
                 description = "lala",
                 location = "",
                 latitude = 47.5456551,
                 longitude = 122.0101731)
-
+        // we check in the viewmodel and in this fun validate_SaveReminder
+        // we pass the reminder to be checked with validateEnteredData and it will return false and wont save
+        //cause the reminder here with no location
         saveReminderViewModel.validate_SaveReminder(reminder)
+        // we wish the return of the fun validateEnteredData that in the validate_SaveReminder notNullValue like true or false
+        //but here will return false cause there is no location in the reminder
         assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), notNullValue())
 
     }

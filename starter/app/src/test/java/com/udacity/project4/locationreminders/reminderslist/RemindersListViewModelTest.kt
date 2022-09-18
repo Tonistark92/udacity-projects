@@ -39,11 +39,10 @@ class RemindersListViewModelTest {
     @Before
     fun createRepository() {
         stopKoin()
-        // init the repo and the viewmodel
+        // init  the viewmodel
         fakeRepo = FakeDataSource()
-        remindersListViewModel = RemindersListViewModel(
-                getApplicationContext(),
-                fakeRepo
+        // init the repo
+        remindersListViewModel = RemindersListViewModel(getApplicationContext(), fakeRepo
         )
     }
     // we here test what if the viewmodel askes for reminders and they he cant reach them so let the repo
@@ -52,9 +51,11 @@ class RemindersListViewModelTest {
     // this is expexted as the repo return error
     @Test
     fun loadRemindersWhenRemindersAreUnavailable() = runBlockingTest {
-
+        // let the repo return return error so the fitiching should fail
         fakeRepo.setShouldReturnError(true)
+        // let the viewmodel ask for reminder and we should get error
         remindersListViewModel.loadReminders()
+        //assert for the return of the loadReminders (we wish to return Reminders not found)
         assertThat(remindersListViewModel.showSnackBar.getOrAwaitValue(), `is`("Reminders not found"))
 
     }
@@ -63,9 +64,11 @@ class RemindersListViewModelTest {
     // if it will return true for no data or not
     @Test
     fun noData() = runBlockingTest {
+        // first we delet all the reminders to test what happen when ask when no data
         fakeRepo.deleteAllReminders()
+        // ask for reminders
         remindersListViewModel.loadReminders()
-
+        // we wish the getOrAwaitValue to return true as there is no data
         assertThat(remindersListViewModel.showNoData.getOrAwaitValue(), `is`(true))
     }
     // we use it to return one ReminderDTO with fake data for testing issues
@@ -83,16 +86,22 @@ class RemindersListViewModelTest {
     // booleans for the nodata and loading false since the loading is done and the data is exisits now
     @Test
     fun showLoading_withdata() = runBlocking {
+        // first delet all reminders
         fakeRepo.deleteAllReminders()
+        // get one reminder from getReminder
         val reminder = getReminder()
+        // save it in the repo
         fakeRepo.saveReminder(reminder)
-
+        // we pause the corotine's dispature
         mainCoroutineRule.pauseDispatcher()
+        // we ask for reminders whitch will load for awhile until we let teh dipature resume
         remindersListViewModel.loadReminders()
-
+        // then we assert that the loading is showing or not
         assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(true))
+        // we resume the dipature
         mainCoroutineRule.resumeDispatcher()
-
+        // as we resumed the dipature so the loading and the waiting will end so both
+        //showLoading.getOrAwaitValue() and showNoData.getOrAwaitValue() will return false
         assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(false))
         assertThat(remindersListViewModel.showNoData.getOrAwaitValue(), `is`(false))
 

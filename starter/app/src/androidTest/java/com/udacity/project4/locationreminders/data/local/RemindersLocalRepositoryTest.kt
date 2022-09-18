@@ -63,6 +63,7 @@ class RemindersLocalRepositoryTest {
     fun saveReminder_retrievesReminder() = runBlocking {
         // GIVEN - A new reminder saved in the database.
         val reminder = getReminder()
+        //we save the reminder
         repository.saveReminder(reminder)
 
         // WHEN  - reminder retrieved by ID.
@@ -84,13 +85,17 @@ class RemindersLocalRepositoryTest {
     // the expected value  Reminder not found
     @Test
     fun deleteAllReminders_getReminderById() = runBlocking {
+        // we get reminder
         val reminder = getReminder()
+        // we save the reminder
         repository.saveReminder(reminder)
+        // then we delete all the reminder
         repository.deleteAllReminders()
-
+        // then we ask for the reminder we save by it's id
         val result = repository.getReminder(reminder.id)
 
-
+        // we shouldn't find it as we delet all after added our knowen reminder but we test if all deleted or not
+        // and the wished result return is error and the message Reminder not found will be returned by the result class util
         assertThat(result is Result.Error, `is`(true))
         result as Result.Error
         assertThat(result.message, `is`("Reminder not found!"))

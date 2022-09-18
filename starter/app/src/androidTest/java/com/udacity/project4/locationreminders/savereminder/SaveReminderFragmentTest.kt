@@ -89,15 +89,15 @@ class SaveReminderFragmentTest {
     // will the snackbar will notify the user to fill it or not
     @Test
     fun noTitle_fails() {
+//        init the navController and the launched fragment
         val navController = Mockito.mock(NavController::class.java)
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
-
-
-
+        // attach the navController for fragment
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
-
+        //checking if we press the save button while the title is
+        // impty will the snackbar will notify the user to fill it or not
         onView(ViewMatchers.withId(R.id.saveReminder)).perform(ViewActions.click())
         onView(withId(R.id.snackbar_text)).check(matches(withText(R.string.err_enter_title)))
 
@@ -111,28 +111,28 @@ class SaveReminderFragmentTest {
                 latitude = 47.5456551,
                 longitude = 122.0101731)
     }
-    //testing if the we press the save button when all done (he really filled the location and the title i mean it is succeses navigation should accur)
+    //testing if the we press the save button when all done (he really filled the discription and the title i mean it is succeses navigation should occur)
     //so the toast for the succeses saving should be showen
     @Test
     fun saveReminder_succeeds() {
+        //get reminder
        val reminder = getReminder()
-
-
-
+        // init the navController and the launched fragment
         val navController = Mockito.mock(NavController::class.java)
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle.EMPTY, R.style.AppTheme)
-
+        // attach the navController for fragment
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-
+        // checking if he entered Description&Title or not
         onView(withId(R.id.reminderTitle)).perform(ViewActions.typeText(reminder.title))
         onView(withId(R.id.reminderDescription)).perform(ViewActions.typeText(reminder.description))
 
-
+        // we preform saving for the reminder
        saveReminderViewModel.saveReminder(reminder)
-
+        // testing if after the checking for the title and discription will save or not
+        // we wish to show message Reminder Saved
        assertThat(saveReminderViewModel.showToast.getOrAwaitValue(), `is` ("Reminder Saved !"))
     }
 }

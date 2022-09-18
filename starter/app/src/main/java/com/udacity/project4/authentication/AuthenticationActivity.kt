@@ -49,6 +49,7 @@ class AuthenticationActivity : AppCompatActivity() {
                 }
             }
         })
+//        set listener for sign in
         binding.signinButton.setOnClickListener {
             startSignIn()
         }
@@ -62,11 +63,7 @@ class AuthenticationActivity : AppCompatActivity() {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
                 // User successfully signed in
-                Log.i(
-                    TAG,
-                    "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!"
-                )
-
+                Log.i(TAG, "Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
 
             } else {
                 // response.getError().getErrorCode() and handle the error.
@@ -77,9 +74,9 @@ class AuthenticationActivity : AppCompatActivity() {
 
     // for starting sign in
     private fun startSignIn() {
-
+        // init the providers
         val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build())
-
+        // start authantication by fiebase
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), SIGN_IN_RESULT_CODE)
     }
 

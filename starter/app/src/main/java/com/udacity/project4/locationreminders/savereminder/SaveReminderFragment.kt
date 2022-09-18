@@ -96,7 +96,7 @@ class SaveReminderFragment : BaseFragment() {
 
     @TargetApi(29)
     private fun foregroundAndBackgroundLocationPermissionApproved(): Boolean {
-        //just small checker for both of the premissions
+        //just small checker for both of the premissions ACCESS_FINE_LOCATION&ACCESS_BACKGROUND_LOCATION
         val foregroundLocationApproved = (
                 PackageManager.PERMISSION_GRANTED ==
                         ActivityCompat.checkSelfPermission(requireContext(),
@@ -154,15 +154,15 @@ class SaveReminderFragment : BaseFragment() {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
+        //init builder & settingsClient for the locationSettingsResponseTask
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val settingsClient = LocationServices.getSettingsClient(requireContext())
-        val locationSettingsResponseTask =
-            settingsClient.checkLocationSettings(builder.build())
+        val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
+        // adding listener for if the failer ocurred
         locationSettingsResponseTask.addOnFailureListener { exception ->
             if (exception is ResolvableApiException && resolve){
                 try {
-                    exception.startResolutionForResult(requireActivity(),
-                        REQUEST_TURN_DEVICE_LOCATION_ON)
+                    exception.startResolutionForResult(requireActivity(), REQUEST_TURN_DEVICE_LOCATION_ON)
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.message)
                 }
@@ -170,8 +170,10 @@ class SaveReminderFragment : BaseFragment() {
                 // Explain user why app needs this permission
             }
         }
+        // adding listener for if success ocurred
         locationSettingsResponseTask.addOnCompleteListener {
             if ( it.isSuccessful ) {
+                //as it is success so we can add geofence
                 addGeofenceForReminder()
             }
         }
@@ -210,7 +212,7 @@ class SaveReminderFragment : BaseFragment() {
                 .addGeofence(geofence)
                 .build()
 
-
+            // creat an intent for the pending intent
             val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
             intent.action = ACTION_GEOFENCE_EVENT
             //pending itent so it will be used later after the action happen

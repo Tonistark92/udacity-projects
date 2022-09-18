@@ -11,9 +11,11 @@ class AuthViewModel : ViewModel()  {
 
     //mapping for each state to corresponding value
     val authState = FirebaseUserLiveData().map { user ->
+        // if we have user so he is authanticated
         if (user != null) {
             AuthenticationState.AUTHENTICATED
         } else {
+            // if we haven't user so he isn't authanticated
             AuthenticationState.UNAUTHENTICATED
         }
     }
