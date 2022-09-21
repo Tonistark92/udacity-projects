@@ -25,75 +25,79 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         get() = Dispatchers.IO + coroutineJob
 
     companion object {
-        private const val JOB_ID = 573
-        private const val TAG = "GeofenceTransitionsJob"
+        private const val JOB_ID = 557
 
         fun enqueueWork(context: Context, intent: Intent) {
-            enqueueWork(context, GeofenceTransitionsJobIntentService::class.java, JOB_ID, intent)
+            enqueueWork(
+                context,
+                GeofenceTransitionsJobIntentService::class.java, JOB_ID,
+                intent
+            )
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        // handling the geofencing transition events and send a
-        // notification to the user when he enters the geofence area
-        val geofencingEvent = GeofencingEvent.fromIntent(intent)
-        if (geofencingEvent.hasError()) {
-            // showing the error message
-            val errorMessage = errorMessage(applicationContext, geofencingEvent.errorCode)
-            Log.e(TAG, errorMessage)
-            return
+        if (intent.action == "LocationFinder.Geofancesutils.ACTION_GEOFENCE_EVENT") {
+            val geofencingEvent = GeofencingEvent.fromIntent(intent)
+
+            if (geofencingEvent!!.hasError()) {
+
+                val errorMessage = errorMessage(applicationContext, geofencingEvent.errorCode)
+                Log.d("TEST", errorMessage)
+                return
+            }
+
+            if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+
+                Log.d("TEST", applicationContext.getString(R.string.geofence_entered))
+
+                sendNotification(geofencingEvent.triggeringGeofences!!)
+
+            }
         }
-        // if we reached to the geofinc will send notification
-        if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-
-            Log.v(TAG, applicationContext.getString(R.string.geofence_entered))
-
-            sendNotification(geofencingEvent.triggeringGeofences)
-
-        }
-
     }
-    //for error accures in the process
+
+    //TODO: get the request id of the current geofence
+    private fun sendNotification(triggeringGeofences: List<Geofence>) {
+        for (triggeringGeofence in triggeringGeofences) {
+            val requestId = triggeringGeofence.requestId
+
+            //Get the local repository instance
+            val remindersLocalRepository: ReminderDataSource by inject()
+//        Interaction to the repository has to be through a coroutine scope
+            CoroutineScope(coroutineContext).launch(SupervisorJob()) {
+                //get the reminder with the request id
+                val result = remindersLocalRepository.getReminder(requestId)
+                if (result is Result.Success<ReminderDTO>) {
+                    val reminderDTO = result.data
+                    //send a notification to the user with the reminder details
+                    sendNotification(
+                        this@GeofenceTransitionsJobIntentService, ReminderDataItem(
+                            reminderDTO.title,
+                            reminderDTO.description,
+                            reminderDTO.location,
+                            reminderDTO.latitude,
+                            reminderDTO.longitude,
+                            reminderDTO.id
+                        )
+                    )
+                }
+            }
+        }
+    }
     fun errorMessage(context: Context, errorCode: Int): String {
         val resources = context.resources
         return when (errorCode) {
             GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
-                R.string.geofence_not_available
+                com.udacity.project4.R.string.geofence_not_available
             )
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
-                R.string.geofence_too_many_geofences
+                com.udacity.project4.R.string.geofence_too_many_geofences
             )
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
-                R.string.geofence_too_many_pending_intents
+                com.udacity.project4.R.string.geofence_too_many_pending_intents
             )
-            else -> resources.getString(R.string.geofence_unknown_error)
-        }
-    }
-
-
-    // the notification fun
-    private fun sendNotification(triggeringGeofences: List<Geofence>) {
-        val requestId = triggeringGeofences[0].requestId
-        //Get the local repository instance
-        val remindersLocalRepository: ReminderDataSource by inject()
-//        Interaction to the repository need to be in coroutine scope as we don't have lifecycle owner here
-        CoroutineScope(coroutineContext).launch(SupervisorJob()) {
-            //get the reminder with the request id
-            val result = remindersLocalRepository.getReminder(requestId)
-            if (result is Result.Success<ReminderDTO>) {
-                val reminderDTO = result.data
-                //send a notification to the user with the reminder details
-                sendNotification(
-                    this@GeofenceTransitionsJobIntentService, ReminderDataItem(
-                        reminderDTO.title,
-                        reminderDTO.description,
-                        reminderDTO.location,
-                        reminderDTO.latitude,
-                        reminderDTO.longitude,
-                        reminderDTO.id
-                    )
-                )
-            }
+            else -> resources.getString(com.udacity.project4.R.string.error_adding_geofence)
         }
     }
 
