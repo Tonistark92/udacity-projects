@@ -23,7 +23,7 @@ class AuthenticationActivity : AppCompatActivity() {
     private val viewModel by viewModels<LoginViewModel>()
     companion object {
         const val TAG = "AuthenticationActivity"
-        const val SIGN_IN_RESULT_CODE = 1001
+        const val SIGN_IN_RESULT_CODE = 3001
     }
 
     private lateinit var homeBinding: ActivityAuthenticationBinding
@@ -37,18 +37,15 @@ class AuthenticationActivity : AppCompatActivity() {
 
 
     private fun launchSignInFlow() {
-        // Give users the option to sign in / register with their email or Google account. If users
-        // choose to register with their email, they will need to create a password as well.
+        // Give users the option to sign in email or Google account. If users
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
         // Create and launch sign-in intent. We listen to the response of this activity with the
         // SIGN_IN_RESULT_CODE code.
-        startActivityForResult(
-            AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
-                providers
-            ).build(), SIGN_IN_RESULT_CODE
+        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+            .setAvailableProviders(providers).build(), SIGN_IN_RESULT_CODE
         )
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

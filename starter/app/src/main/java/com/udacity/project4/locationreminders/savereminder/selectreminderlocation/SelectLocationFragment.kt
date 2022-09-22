@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -59,9 +60,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
 
@@ -77,57 +76,16 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun onPause() {
-        super.onPause()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
 
 
 
-    private fun onLocationSelected() {
-        binding.saveButton.setOnClickListener {
-            if (latitudepoi!=0.0||longitudepoi!=0.0) {
-                _viewModel.latitude.value = latitudepoi
-                _viewModel.longitude.value = longitudepoi
-                _viewModel.reminderSelectedLocationStr.value = namepoi
-                _viewModel.navigationCommand.value =
-                    NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "please choose point of interest",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
 
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.map_options, menu)
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        // TODO: Change the map type based on the user's selection.
-        R.id.normal_map -> {
-            map.mapType = GoogleMap.MAP_TYPE_NORMAL
-            true
-        }
-        R.id.hybrid_map -> {
-            map.mapType = GoogleMap.MAP_TYPE_HYBRID
-            true
-        }
-        R.id.satellite_map -> {
-            map.mapType = GoogleMap.MAP_TYPE_SATELLITE
-            true
-        }
-        R.id.terrain_map -> {
-            map.mapType = GoogleMap.MAP_TYPE_TERRAIN
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
+
+
+
 
     @RequiresApi(33)
     override fun onMapReady(googleMap: GoogleMap) {
@@ -183,7 +141,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-
     private fun setPoiClick(map: GoogleMap) {
         map.setOnPoiClickListener { poi ->
             latitudepoi = poi.latLng.latitude
@@ -198,7 +155,23 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             poiMarker!!.showInfoWindow()
         }
     }
-
+    private fun onLocationSelected() {
+        binding.saveButton.setOnClickListener {
+            if (latitudepoi!=0.0||longitudepoi!=0.0) {
+                _viewModel.latitude.value = latitudepoi
+                _viewModel.longitude.value = longitudepoi
+                _viewModel.reminderSelectedLocationStr.value = namepoi
+                _viewModel.navigationCommand.value =
+                    NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "please choose point of interest",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
     private fun setMapStyle(map: GoogleMap) {
         try {
             // Customize the styling of the base map using a JSON object defined
@@ -217,46 +190,75 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             Log.e(TAG, "Can't find style. Error: ", e)
         }
     }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        // TODO: Change the map type based on the user's selection.
+        R.id.normal_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_NORMAL
+            true
+        }
+        R.id.hybrid_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_HYBRID
+            true
+        }
+        R.id.satellite_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            true
+        }
+        R.id.terrain_map -> {
+            map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.map_options, menu)
+    }
+
+    // Your app needs the ACCESS_FINE_LOCATION permission for getting the user’s location details
     private fun isPermissionGranted() : Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
     }
     private fun enableMyLocation() {
-
-        when {
-            (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) -> {
-
-                // You can use the API that requires the permission.
-                map.isMyLocationEnabled = true
-
-                /*fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        lastLocation = location
-                        val currentLatLng = LatLng(location.latitude, location.longitude)
-                        val markerOptions = MarkerOptions().position(currentLatLng)
-                        map.addMarker(markerOptions)
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
-                    }
-                }*/
-                Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_LONG).show()
+        if (isPermissionGranted()) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
             }
-            (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) ->{
-                // Explain why you need the permission
-                // Add dialog
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    1
-                )
+            map.isMyLocationEnabled = true
+        }
+        else {
+            Toast.makeText(requireContext(), "please need location to add your reminder", Toast.LENGTH_SHORT).show()
+            requestPermissions(
+                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()){ task ->
+            if (task != null) {
+                latitude=task.latitude
+                longitude=task.longitude
+                val yourplace = LatLng(latitude, longitude)
+                val zoomLevel = 15f//from 1 world to 20 specific
+                map.addMarker(MarkerOptions().position(yourplace).title("your place"))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(yourplace, zoomLevel))
+            }else{
+                fusedLocationClient.requestLocationUpdates(locationRequest,
+                    locationCallback,
+                    Looper.getMainLooper())
             }
-
-            else ->
-                //Request permission
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    1
-                )
         }
 
     }
@@ -286,8 +288,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
 
     }
-
+    override fun onPause() {
+        super.onPause()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
 
 }
+
 
 

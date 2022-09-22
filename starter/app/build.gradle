@@ -8,7 +8,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 33
     defaultConfig {
-        applicationId "com.udacity.project4.islam"
+        applicationId "com.udacity.project4.islam1"
         minSdkVersion 19
         targetSdkVersion 33
         versionCode 1

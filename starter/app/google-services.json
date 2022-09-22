@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:884144386705:android:5299cf862dc1fbf742c530",
+        "mobilesdk_app_id": "1:884144386705:android:d4cda433b99b2eae42c530",
         "android_client_info": {
-          "package_name": "com.udacity.project4.islam"
+          "package_name": "com.udacity.project4.islam1"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "884144386705-natcqk0jjf8e0n2e1u7qrskvv3mvt1ra.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udacity.project4.islam1",
+            "certificate_hash": "c71cce16d4d736c66814cfb0dbf12b36eeff3e3b"
+          }
+        },
         {
           "client_id": "884144386705-qsdeati84rhccshv3lgelffhmv9vcvuo.apps.googleusercontent.com",
           "client_type": 3
