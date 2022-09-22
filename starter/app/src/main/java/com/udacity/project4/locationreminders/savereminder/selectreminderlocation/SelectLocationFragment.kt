@@ -96,7 +96,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         locationRequest.setFastestInterval(120000)
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
         val yourplace = LatLng(latitude, longitude)
-        val zoomLevel = 15f//from 1 world to 20 specific
+        val zoomLevel = 10f
         map.addMarker(MarkerOptions().position(yourplace).title("your place"))
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(yourplace, zoomLevel))
         setPoiClick(map)
@@ -111,7 +111,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     latitude=location.latitude
                     longitude=location.longitude
                     val yourplace = LatLng(latitude, longitude)
-                    val zoomLevel = 15f//from 1 world to 20 specific
+                    val zoomLevel = 10f//from 1 world to 20 specific
                     map.addMarker(MarkerOptions().position(yourplace).title("your place"))
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(yourplace, zoomLevel))
                 }
@@ -158,12 +158,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun onLocationSelected() {
         binding.saveButton.setOnClickListener {
             if (latitudepoi!=0.0||longitudepoi!=0.0) {
+                //collect the data and navegate after clicking and collecting
                 _viewModel.latitude.value = latitudepoi
                 _viewModel.longitude.value = longitudepoi
                 _viewModel.reminderSelectedLocationStr.value = namepoi
                 _viewModel.navigationCommand.value =
                     NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
             } else {
+                //if didnt choose location yet and clicked save will show to ask for the location
                 Toast.makeText(
                     requireContext(),
                     "please choose point of interest",
@@ -174,7 +176,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     }
     private fun setMapStyle(map: GoogleMap) {
         try {
-            // Customize the styling of the base map using a JSON object defined
+            // Customize the styling of the base map using a *JSON* object defined
             // in a raw resource file.
             val success = map.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(

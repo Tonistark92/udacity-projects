@@ -22,8 +22,8 @@ class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
         firebaseAuth.addAuthStateListener(authStateListener)
     }
 
-    // When this object no longer has an active observer, stop observing the FirebaseAuth state to
-    // prevent memory leaks.
+    // stop observing the FirebaseAuth state to
+    // prevent memory leaks.When this object no longer has an active observer
     override fun onInactive() {
         firebaseAuth.removeAuthStateListener(authStateListener)
     }

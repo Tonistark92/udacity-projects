@@ -22,8 +22,6 @@ import org.junit.runner.RunWith
 //Unit test the DAO
 @SmallTest
 class RemindersDaoTest {
-    //    TODO: Add testing implementation to the RemindersDao.kt
-
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -45,20 +43,20 @@ class RemindersDaoTest {
     fun closeDb() = database.close()
 
     @Test
-    fun addReminderAndGetById() = runBlockingTest {
-        // GIVEN - Insert a task.
+    fun addReminder_GetById() = runBlockingTest {
+        //  Insert a reminder.
         val reminder = ReminderDTO(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         database.reminderDao().saveReminder(reminder)
 
-        // WHEN - Get the task by id from the database.
+        // WHEN - Get the reminder by id from the database.
         val loaded = database.reminderDao().getReminderById(reminder.id)
 
-        // THEN - The loaded data contains the expected values.
+        // checking The loaded data contains the expected values for reminder.
         assertThat<ReminderDTO>(loaded as ReminderDTO, notNullValue())
         assertThat(loaded.id, `is`(reminder.id))
         assertThat(loaded.title, `is`(reminder.title))

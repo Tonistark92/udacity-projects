@@ -83,11 +83,6 @@ class SaveReminderFragment : BaseFragment() {
                         0,
                         null
                     )
-//               fall because it cant call from fragment
-                    //                    exception.startResolutionForResult(
-//                        requireActivity(),
-//                        REQUEST_TURN_DEVICE_LOCATION_ON
-//                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error getting location settings resolutions: ${sendEx.message}")
                 }

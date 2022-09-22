@@ -92,14 +92,13 @@ class ReminderListFragmentTest: AutoCloseKoinTest() {
         }
     }
 
-    // TODO: test the displayed data on the UI.
     @Test
     fun completedReminder_DisplayedInUi() = runBlockingTest{
 
         val reminder = ReminderDTO(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         runBlocking{
@@ -112,17 +111,16 @@ class ReminderListFragmentTest: AutoCloseKoinTest() {
     }
 
 
-//    TODO: test the navigation of the fragments.
     @Test
-    fun clickInFloatingButton_navigateToSaveFragment() {
-        // GIVEN - On the home screen
+    fun isClickInFloatingButton_navigateToSaveFragment() {
+        //  On the home screen
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(),R.style.AppTheme)
         val navController = mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        // WHEN - Click on the "+" button
+        //  Click on the flaoting action button button
         onView(withId(R.id.addReminderFAB)).perform(click())
 
         // THEN - Verify that we navigate to the add screen
@@ -131,12 +129,12 @@ class ReminderListFragmentTest: AutoCloseKoinTest() {
         )
     }
     @Test
-    fun firstTimeOpen_returnNoData(){
+    fun firstTimeOpen_getsNoData(){
        launchFragmentInContainer<ReminderListFragment>(Bundle(),R.style.AppTheme)
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
     }
     @Test
-    fun isToastMessageDisplayed() {
+    fun isToastDisplayed() {
         //note need to stop animation from your device ,to not case error
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(),R.style.AppTheme)
         val navController = mock(NavController::class.java)

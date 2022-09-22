@@ -83,7 +83,7 @@ class SaveFragmentTest: AutoCloseKoinTest() {
             }
             //Declare singleton definitions to be later injected using by inject()
             single {
-                //This view model is declared singleton to be used across multiple fragments
+                //This view model is declared singleton pattern to be used across all fragments
                 SaveReminderViewModel(
                     get(),
                     get() as ReminderDataSource
@@ -103,8 +103,7 @@ class SaveFragmentTest: AutoCloseKoinTest() {
     @Test
     fun NoLocation_RetrunError() {
         val navController = mock(NavController::class.java)
-        val scenario =
-            launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
+        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
 
         dataBindingIdlingResource.monitorFragment(scenario)
 

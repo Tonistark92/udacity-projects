@@ -59,12 +59,12 @@ class SaveReminderViewModelTest {
     }
 
     @Test
-    fun addTask_ReturnPass() = runTest{
+    fun addReminder_ReturnSaved() = runTest{
 
         val reminder =  ReminderDataItem(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         saveListViewModel.saveReminder(reminder)
@@ -72,11 +72,11 @@ class SaveReminderViewModelTest {
     }
 
     @Test
-    fun noLocation_retrunError() = runTest{
+    fun addNoLocation_retrunError() = runTest{
 
         val reminder =  ReminderDataItem(
-            title = "star bucks",
-            description = "Drink coffee",
+            title = "mtitle",
+            description = "mdesc",
             location = "",
             latitude = 25.33243,
             longitude = 195.03211)
@@ -85,11 +85,11 @@ class SaveReminderViewModelTest {
     }
 
     @Test
-    fun addNullTitle_retrunError() = runTest {
+    fun addNoTitle_retrunError() = runTest {
         val reminder =  ReminderDataItem(
             title = "",
-            description = "Drink coffee",
-            location = "san Stefano",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         saveListViewModel.validateAndSaveReminder(reminder)
@@ -98,11 +98,11 @@ class SaveReminderViewModelTest {
     }
 
     @Test
-    fun addTask_showLoadingBar()= runBlocking{
+    fun addReminder_showLoadingBar()= runBlocking{
         val reminder =  ReminderDataItem(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         mainCoroutineRule.pauseDispatcher()

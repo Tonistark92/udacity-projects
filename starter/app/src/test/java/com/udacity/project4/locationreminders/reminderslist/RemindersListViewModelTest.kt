@@ -65,9 +65,9 @@ class RemindersListViewModelTest {
     fun addTask_ShowLoadingBar() =  mainCoroutineRule.runBlockingTest {
         remindersRepository.deleteAllReminders()
         val reminder = ReminderDTO(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         remindersRepository.saveReminder(reminder)

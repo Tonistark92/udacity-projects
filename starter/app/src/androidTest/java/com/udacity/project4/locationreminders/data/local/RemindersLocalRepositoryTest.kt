@@ -26,7 +26,6 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-//    TODO: Add testing implementation to the RemindersLocalRepository.kt
 private lateinit var localDataSource: RemindersLocalRepository
     private lateinit var database: RemindersDatabase
 
@@ -58,19 +57,19 @@ private lateinit var localDataSource: RemindersLocalRepository
     }
     @Test
     fun saveReminder_rutrunReminder() = runBlocking {
-        // GIVEN - A new task saved in the database.
+        //  new reminder saved in the database.
         val reminder = ReminderDTO(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         localDataSource.saveReminder(reminder)
 
-        // WHEN  - Task retrieved by ID.
+        // THEN  - reminder retrieved by ID.
         val result = localDataSource.getReminder(reminder.id)
 
-        // THEN - Same task is returned.
+        // THEN - Same reminder is returned.
         result as Result.Success
         assertThat(result.data.title, `is`(reminder.title))
         assertThat(result.data.description, `is`(reminder.description))
@@ -79,9 +78,9 @@ private lateinit var localDataSource: RemindersLocalRepository
     @Test
     fun getReminder_returnNoData()= runBlocking{
         val reminder = ReminderDTO(
-            title = "star bucks",
-            description = "Drink coffee",
-            location = "san Stefano",
+            title = "mtitle",
+            description = "mdesc",
+            location = "el marg",
             latitude = 25.33243,
             longitude = 195.03211)
         localDataSource.saveReminder(reminder)

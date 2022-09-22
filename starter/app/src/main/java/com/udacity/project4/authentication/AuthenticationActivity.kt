@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.databinding.ActivityAuthenticationBinding
 import com.udacity.project4.locationreminders.RemindersActivity
@@ -29,7 +28,14 @@ class AuthenticationActivity : AppCompatActivity() {
     private lateinit var homeBinding: ActivityAuthenticationBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        observeAuthenticationState()
+        viewModel.authenticationState.observe(this, Observer { authenticationState ->
+            when (authenticationState) {
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                    val i = Intent(this@AuthenticationActivity, RemindersActivity::class.java)
+                    startActivity(i)
+                }
+            }
+        })
         homeBinding = DataBindingUtil.setContentView(this, R.layout.activity_authentication)
         homeBinding.loginButton.setOnClickListener { launchSignInFlow() }
     }
@@ -53,13 +59,10 @@ class AuthenticationActivity : AppCompatActivity() {
         if (requestCode == SIGN_IN_RESULT_CODE) {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
-                // Successfully signed in user.
-                goToReminder()
-                Log.i(
-                    TAG,
-                    "Successfully signed in user " +
-                            "${FirebaseAuth.getInstance().currentUser?.displayName}!"
-                )
+                // when success sign in
+                val i = Intent(this@AuthenticationActivity, RemindersActivity::class.java)
+                startActivity(i)
+//                Log.i(TAG, "Successfully signed in user " + "${FirebaseAuth.getInstance().currentUser?.displayName}!")
             } else {
                 // Sign in failed. If response is null the user canceled the sign-in flow using
                 // the back button. Otherwise check response.getError().getErrorCode() and handle
@@ -69,19 +72,5 @@ class AuthenticationActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeAuthenticationState() {
-
-        viewModel.authenticationState.observe(this, Observer { authenticationState ->
-            when (authenticationState) {
-                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                    goToReminder()
-                }
-            }
-        })
-    }
-    private fun goToReminder(){
-        val i = Intent(this@AuthenticationActivity, RemindersActivity::class.java)
-        startActivity(i)
-    }
 
 }
