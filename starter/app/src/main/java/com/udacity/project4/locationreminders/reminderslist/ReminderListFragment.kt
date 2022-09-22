@@ -2,18 +2,15 @@ package com.udacity.project4.locationreminders.reminderslist
 
 import android.content.Intent
 import android.os.Bundle
-
 import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
-import com.udacity.project4.authentication.AuthViewModel
 import com.udacity.project4.authentication.AuthenticationActivity
+import com.udacity.project4.authentication.LoginViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
@@ -25,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ReminderListFragment : BaseFragment() {
     //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
-    private val viewModel by viewModels<AuthViewModel>()
+    private val viewModel by viewModels<LoginViewModel>()
     private lateinit var binding: FragmentRemindersBinding
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
@@ -98,11 +95,11 @@ class ReminderListFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-                viewModel.authState.observe(
+                viewModel.authenticationState.observe(
                     viewLifecycleOwner,
                     Observer { authenticationState ->
                         when (authenticationState) {
-                            AuthViewModel.AuthenticationState.AUTHENTICATED -> {
+                            LoginViewModel.AuthenticationState.AUTHENTICATED -> {
                                 AuthUI.getInstance().signOut(requireContext())
                                 navigateToBack()
                             }

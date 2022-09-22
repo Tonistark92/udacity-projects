@@ -25,8 +25,9 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         get() = Dispatchers.IO + coroutineJob
 
     companion object {
-        private const val JOB_ID = 557
+        private const val JOB_ID = 573
 
+        //        TODO: call this to start the JobIntentService to handle the geofencing transition events
         fun enqueueWork(context: Context, intent: Intent) {
             enqueueWork(
                 context,
@@ -56,7 +57,21 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             }
         }
     }
-
+    fun errorMessage(context: Context, errorCode: Int): String {
+        val resources = context.resources
+        return when (errorCode) {
+            GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
+                com.udacity.project4.R.string.geofence_not_available
+            )
+            GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
+                com.udacity.project4.R.string.geofence_too_many_geofences
+            )
+            GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
+                com.udacity.project4.R.string.geofence_too_many_pending_intents
+            )
+            else -> resources.getString(com.udacity.project4.R.string.error_adding_geofence)
+        }
+    }
     //TODO: get the request id of the current geofence
     private fun sendNotification(triggeringGeofences: List<Geofence>) {
         for (triggeringGeofence in triggeringGeofences) {
@@ -83,21 +98,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
                     )
                 }
             }
-        }
-    }
-    fun errorMessage(context: Context, errorCode: Int): String {
-        val resources = context.resources
-        return when (errorCode) {
-            GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
-                com.udacity.project4.R.string.geofence_not_available
-            )
-            GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
-                com.udacity.project4.R.string.geofence_too_many_geofences
-            )
-            GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
-                com.udacity.project4.R.string.geofence_too_many_pending_intents
-            )
-            else -> resources.getString(com.udacity.project4.R.string.error_adding_geofence)
         }
     }
 

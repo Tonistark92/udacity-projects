@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -86,7 +85,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
 
     private fun onLocationSelected() {
-
         binding.saveButton.setOnClickListener {
             if (latitudepoi!=0.0||longitudepoi!=0.0) {
                 _viewModel.latitude.value = latitudepoi
@@ -224,70 +222,72 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
     }
-    @RequiresApi(33)
     private fun enableMyLocation() {
-        if (isPermissionGranted()) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
+
+        when {
+            (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) -> {
+
+                // You can use the API that requires the permission.
+                map.isMyLocationEnabled = true
+
+                /*fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        lastLocation = location
+                        val currentLatLng = LatLng(location.latitude, location.longitude)
+                        val markerOptions = MarkerOptions().position(currentLatLng)
+                        map.addMarker(markerOptions)
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+                    }
+                }*/
+                Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_LONG).show()
             }
-            map.isMyLocationEnabled = true
-        }
-        else {
-            Toast.makeText(requireContext(), "please need location to add your reminder", Toast.LENGTH_SHORT).show()
-            requestPermissions(
-                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
-        }
-        fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()){ task ->
-            if (task != null) {
-                latitude=task.latitude
-                longitude=task.longitude
-                val yourplace = LatLng(latitude, longitude)
-                val zoomLevel = 15f//from 1 world to 20 specific
-                map.addMarker(MarkerOptions().position(yourplace).title("your place"))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(yourplace, zoomLevel))
-            }else{
-                fusedLocationClient.requestLocationUpdates(locationRequest,
-                    locationCallback,
-                    Looper.getMainLooper())
+            (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) ->{
+                // Explain why you need the permission
+                // Add dialog
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    1
+                )
             }
+
+            else ->
+                //Request permission
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    1
+                )
         }
 
     }
 
-    @RequiresApi(33)
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // Check if location permissions are granted and if so enable the
-        // location data layer.
-        Log.d("testt","enter")
-        if (requestCode == 1) {
-            if (grantResults.size > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                enableMyLocation()
+        // Check if location permissions are granted and if so enable the location
+
+        when (requestCode) {
+            1-> {
+
+                if (grantResults.isNotEmpty() && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // Permission is granted. Continue...
+                    enableMyLocation()
+
+                } else {
+                    // Explain to the user that the feature is unavailable because
+                    // the features requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                    Toast.makeText(context, "Location permission was not granted.", Toast.LENGTH_LONG).show()
+                }
+
             }
-            else{
-                Toast.makeText(requireContext(), "please let access location to know your place!!", Toast.LENGTH_SHORT).show()
-            }
+
         }
+
     }
+
 
 }
+
+

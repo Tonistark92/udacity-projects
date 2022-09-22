@@ -12,14 +12,12 @@ import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import kotlinx.coroutines.launch
 
-class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) : BaseViewModel(app) {
+class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) :
+    BaseViewModel(app) {
     val reminderTitle = MutableLiveData<String>()
-
     val reminderDescription = MutableLiveData<String>()
     val reminderSelectedLocationStr = MutableLiveData<String>()
-
     val selectedPOI = MutableLiveData<PointOfInterest>()
-
     val latitude = MutableLiveData<Double>()
     val longitude = MutableLiveData<Double>()
 
@@ -36,15 +34,12 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     }
 
     /**
-     *
      * Validate the entered data then saves the reminder data to the DataSource
      */
-    fun validate_SaveReminder(reminderData: ReminderDataItem): Boolean{
+    fun validateAndSaveReminder(reminderData: ReminderDataItem) {
         if (validateEnteredData(reminderData)) {
             saveReminder(reminderData)
-            return true
         }
-        return false
     }
 
     /**
@@ -65,8 +60,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
             )
             showLoading.value = false
             showToast.value = app.getString(R.string.reminder_saved)
-            navigationCommand.value = NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToReminderListFragment())
-            //NavigationCommand.Back
+            navigationCommand.value = NavigationCommand.Back
         }
     }
 
@@ -85,5 +79,4 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
         return true
     }
-
 }
