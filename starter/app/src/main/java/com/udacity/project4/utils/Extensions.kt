@@ -21,7 +21,7 @@ import java.net.URL
 
 
 /**
- * Extension function to setup the RecyclerView
+ * Extension function and setup the RecyclerView
  */
 fun <T> RecyclerView.setup(
     adapter: BaseRecyclerViewAdapter<T>
