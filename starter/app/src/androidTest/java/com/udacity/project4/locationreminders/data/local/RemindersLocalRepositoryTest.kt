@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
 
@@ -26,7 +25,7 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-private lateinit var localDataSource: RemindersLocalRepository
+    private lateinit var localDataSource: RemindersLocalRepository
     private lateinit var database: RemindersDatabase
 
 
@@ -34,9 +33,20 @@ private lateinit var localDataSource: RemindersLocalRepository
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    private fun getReminder(): ReminderDTO {
+        return ReminderDTO(
+            title = "title",
+            description = "desc",
+            location = "loc",
+            latitude = 47.5456551,
+            longitude = 122.0101731
+        )
+    }
+
     @Before
     fun setup() {
-        // Using an in-memory database for testing, because it doesn't survive killing the process.
+        // Using an in-memory database so that the information stored here disappears when the
+        // process is killed.
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             RemindersDatabase::class.java
@@ -44,29 +54,22 @@ private lateinit var localDataSource: RemindersLocalRepository
             .allowMainThreadQueries()
             .build()
 
-        localDataSource =
-            RemindersLocalRepository(
-                database.reminderDao(),
-                Dispatchers.Main
-            )
+        localDataSource = RemindersLocalRepository(database.reminderDao(), Dispatchers.Main)
     }
 
     @After
     fun cleanUp() {
         database.close()
     }
+    // we save the reminder as normal and get it back so we check with result class then
+    // check if the saved == the returned so we tested teh saving and getting by id
     @Test
-    fun saveReminder_rutrunReminder() = runBlocking {
-        //  new reminder saved in the database.
-        val reminder = ReminderDTO(
-            title = "mtitle",
-            description = "mdesc",
-            location = "el marg",
-            latitude = 25.33243,
-            longitude = 195.03211)
+    fun saveReminder_retrievesReminder() = runBlocking {
+        // GIVEN - A new reminder saved in the database.
+        val reminder = getReminder()
         localDataSource.saveReminder(reminder)
 
-        // THEN  - reminder retrieved by ID.
+        // WHEN  - reminder retrieved by ID.
         val result = localDataSource.getReminder(reminder.id)
 
         // THEN - Same reminder is returned.
@@ -75,17 +78,21 @@ private lateinit var localDataSource: RemindersLocalRepository
         assertThat(result.data.description, `is`(reminder.description))
         assertThat(result.data.location, `is`(reminder.location))
     }
+    // testing that if the deleting all is really happening or not so we save one reminder that we have it's
+    // id then we delete all then check if the reminder with the id we know is still there or it
+    // the expected value  Reminder not found
     @Test
-    fun getReminder_returnNoData()= runBlocking{
-        val reminder = ReminderDTO(
-            title = "mtitle",
-            description = "mdesc",
-            location = "el marg",
-            latitude = 25.33243,
-            longitude = 195.03211)
+    fun deleteAllReminders_getReminderById() = runBlocking {
+        // we get reminder
+        val reminder = getReminder()
+        // we save the reminder
         localDataSource.saveReminder(reminder)
+        // then we delete all the reminder
         localDataSource.deleteAllReminders()
-        // WHEN  - Task retrieved by ID.
+        // then we ask for the reminder we save by it's id
+
+        // we shouldn't find it as we delet all after added our knowen reminder but we test if all deleted or not
+        // and the wished result return is error and the message Reminder not found will be returned by the result class util
         val result = localDataSource.getReminder(reminder.id)
         result as Result.Error
         assertThat(result.message, `is`("Reminder not found!"))

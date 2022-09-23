@@ -9,15 +9,12 @@ import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.google.android.material.internal.ContextUtils.getActivity
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.ToastMatcher
+import com.udacity.project4.locationreminders.ToastChecker
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.local.LocalDB
@@ -26,9 +23,7 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.not
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -130,7 +125,7 @@ class ReminderListFragmentTest: AutoCloseKoinTest() {
     }
     @Test
     fun firstTimeOpen_getsNoData(){
-       launchFragmentInContainer<ReminderListFragment>(Bundle(),R.style.AppTheme)
+        launchFragmentInContainer<ReminderListFragment>(Bundle(),R.style.AppTheme)
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
     }
     @Test
@@ -144,6 +139,6 @@ class ReminderListFragmentTest: AutoCloseKoinTest() {
         // WHEN - Click on the "+" button
         onView(withId(R.id.addReminderFAB)).perform(click())
 
-        onView(withText("LETS ADD REMINDER!!")).inRoot(ToastMatcher()).check(matches(isDisplayed()))
+        onView(withText("LETS ADD REMINDER!!")).inRoot(ToastChecker()).check(matches(isDisplayed()))
     }
 }

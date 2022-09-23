@@ -57,54 +57,68 @@ class SaveReminderViewModelTest {
     fun delRep(){
         runBlocking { saveRepository.deleteAllReminders()}
     }
-
+    // here trying the saving if successful and if it will be retrieved
     @Test
     fun addReminder_ReturnSaved() = runTest{
 
-        val reminder =  ReminderDataItem(
-            title = "mtitle",
-            description = "mdesc",
-            location = "el marg",
-            latitude = 25.33243,
-            longitude = 195.03211)
+        val reminder =   ReminderDataItem(
+            title = "tit",
+            description = "desc",
+            location = "loco",
+            latitude = 47.5456551,
+            longitude = 122.0101731)
         saveListViewModel.saveReminder(reminder)
         assertThat(saveListViewModel.showToast.getOrAwaitValue(), `is`("Reminder Saved !"))
     }
-
+    // testing saving the remainder without location in the validate_savereminder we sen the reminder
+    // to validateEnteredData as we did to the location so it will return false if there is no location
+    // the sme rest for the location test
     @Test
     fun addNoLocation_retrunError() = runTest{
 
-        val reminder =  ReminderDataItem(
-            title = "mtitle",
-            description = "mdesc",
+        val reminder = ReminderDataItem(
+            title = "look",
+            description = "lala",
             location = "",
-            latitude = 25.33243,
-            longitude = 195.03211)
+            latitude = 47.5456551,
+            longitude = 122.0101731)
+        // we check in the viewmodel and in this fun validate_SaveReminder
+        // we pass the reminder to be checked with validateEnteredData and it will return false and wont save
+        //cause the reminder here with no location
         saveListViewModel.validateAndSaveReminder(reminder)
+        // we wish the return of the fun validateEnteredData that in the validate_SaveReminder notNullValue like true or false
+        //but here will return false cause there is no location in the reminder
         assertThat(saveListViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
     }
-
+    // we test if the saving the remainder that has no title which is not gonna happen because the
+    // fragment dont navigate if there is no title but if there is no title we check in the view model
+    // in fun validateEnteredData() so it will return false to validate_SaveReminder and it will return false
+    // so it is at least notnullvalue and the snakebar will massage for enter the title
     @Test
     fun addNoTitle_retrunError() = runTest {
         val reminder =  ReminderDataItem(
-            title = "",
-            description = "mdesc",
-            location = "el marg",
-            latitude = 25.33243,
-            longitude = 195.03211)
+            title = "tit",
+            description = "desc",
+            location = "loco",
+            latitude = 47.5456551,
+            longitude = 122.0101731)
+        // the view model check and save the reminder and shouldn't save couse in
+        // validate_SaveReminder we check before pass the reminder for the save fun in the validateEnteredData
+        // and in this fun we check for the title and location in existis
         saveListViewModel.validateAndSaveReminder(reminder)
+        // we wish to return non null cause in validateEnteredData return boolean so it will return false in this case
         assertThat(saveListViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
 
     }
-
+    // we here check if the loading will appear while we saving
     @Test
     fun addReminder_showLoadingBar()= runBlocking{
         val reminder =  ReminderDataItem(
-            title = "mtitle",
-            description = "mdesc",
-            location = "el marg",
-            latitude = 25.33243,
-            longitude = 195.03211)
+            title = "tit",
+            description = "desc",
+            location = "loco",
+            latitude = 47.5456551,
+            longitude = 122.0101731)
         mainCoroutineRule.pauseDispatcher()
         saveListViewModel.validateAndSaveReminder(reminder)
         assertThat(saveListViewModel.showLoading.getOrAwaitValue(), `is`(true))

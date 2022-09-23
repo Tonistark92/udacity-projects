@@ -19,7 +19,7 @@ import com.udacity.project4.locationreminders.RemindersActivity
  * signed in users to the RemindersActivity.
  */
 class AuthenticationActivity : AppCompatActivity() {
-    private val viewModel by viewModels<LoginViewModel>()
+    private val viewModel by viewModels<AuthViewModel>()
     companion object {
         const val TAG = "AuthenticationActivity"
         const val SIGN_IN_RESULT_CODE = 3001
@@ -30,7 +30,7 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewModel.authenticationState.observe(this, Observer { authenticationState ->
             when (authenticationState) {
-                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                     val i = Intent(this@AuthenticationActivity, RemindersActivity::class.java)
                     startActivity(i)
                 }

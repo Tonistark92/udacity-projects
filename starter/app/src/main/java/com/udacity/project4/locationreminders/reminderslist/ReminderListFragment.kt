@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
-import com.udacity.project4.authentication.LoginViewModel
+import com.udacity.project4.authentication.AuthViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ReminderListFragment : BaseFragment() {
     //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
-    private val viewModel by viewModels<LoginViewModel>()
+    private val viewModel by viewModels<AuthViewModel>()
     private lateinit var binding: FragmentRemindersBinding
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
@@ -99,7 +99,7 @@ class ReminderListFragment : BaseFragment() {
                     viewLifecycleOwner,
                     Observer { authenticationState ->
                         when (authenticationState) {
-                            LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                            AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                                 AuthUI.getInstance().signOut(requireContext())
                                 navigateToBack()
                             }

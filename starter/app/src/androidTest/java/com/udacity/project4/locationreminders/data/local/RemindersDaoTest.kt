@@ -42,15 +42,22 @@ class RemindersDaoTest {
     @After
     fun closeDb() = database.close()
 
+    private fun getReminder(): ReminderDTO {
+        return ReminderDTO(
+            title = "title",
+            description = "desc",
+            location = "loc",
+            latitude = 47.5456551,
+            longitude = 122.0101731)
+    }
+    // we first get reminder from getReminder and save it and then get it back by it's id so we test
+    // the saving and the fitching with id and we check that the data we saved is that what we
+    // inserted by retriving it by reminder's id then check what we expect that the
+    // data of the saved one is the retriedd one
     @Test
-    fun addReminder_GetById() = runBlockingTest {
+    fun insertReminderAndFindById() = runBlockingTest {
         //  Insert a reminder.
-        val reminder = ReminderDTO(
-            title = "mtitle",
-            description = "mdesc",
-            location = "el marg",
-            latitude = 25.33243,
-            longitude = 195.03211)
+        val reminder = getReminder()
         database.reminderDao().saveReminder(reminder)
 
         // WHEN - Get the reminder by id from the database.

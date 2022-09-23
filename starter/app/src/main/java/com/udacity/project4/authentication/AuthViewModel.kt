@@ -1,11 +1,9 @@
 package com.udacity.project4.authentication
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
-import kotlin.random.Random
 
-class LoginViewModel : ViewModel() {
+class AuthViewModel : ViewModel() {
 
 
     enum class AuthenticationState {
