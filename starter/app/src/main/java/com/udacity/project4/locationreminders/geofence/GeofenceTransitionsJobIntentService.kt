@@ -11,7 +11,6 @@ import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.sendNotification
 import kotlinx.coroutines.*
@@ -42,21 +41,21 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
             if (geofencingEvent!!.hasError()) {
 
-                val errorMessage = errorMessage(applicationContext, geofencingEvent.errorCode)
-                Log.d("TEST", errorMessage)
+                val errorMessage = giveErrorMessage(applicationContext, geofencingEvent.errorCode)
+                Log.d("testing", errorMessage)
                 return
             }
 
             if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
 
-                Log.d("TEST", applicationContext.getString(R.string.geofence_entered))
+                Log.d("testing", applicationContext.getString(R.string.geofence_entered))
 
                 sendNotification(geofencingEvent.triggeringGeofences!!)
 
             }
         }
     }
-    fun errorMessage(context: Context, errorCode: Int): String {
+    fun giveErrorMessage(context: Context, errorCode: Int): String {
         val resources = context.resources
         return when (errorCode) {
             GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
@@ -71,7 +70,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             else -> resources.getString(com.udacity.project4.R.string.error_adding_geofence)
         }
     }
-    //TODO: get the request id of the current geofence
+
     private fun sendNotification(triggeringGeofences: List<Geofence>) {
         for (triggeringGeofence in triggeringGeofences) {
             val requestId = triggeringGeofence.requestId

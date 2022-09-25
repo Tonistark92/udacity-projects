@@ -21,7 +21,8 @@ import org.koin.core.context.stopKoin
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-//fix robolectricVersion with newer version,note we can ignore it but viewmodel use context to use in fragment
+//fix robolectricVersion with newer version,
+// note we can ignore it but viewmodel use context to use in fragment
 @Config(maxSdk =28)
 @ExperimentalCoroutinesApi
 class RemindersListViewModelTest {

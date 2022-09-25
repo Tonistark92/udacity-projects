@@ -103,7 +103,6 @@ class SaveReminderFragment : BaseFragment() {
 
         }
     }
-
     @TargetApi(29)
     private fun foregroundAndBackgroundLocationPermissionApproved(): Boolean {
         //just small checker for both of the premissions ACCESS_FINE_LOCATION&ACCESS_BACKGROUND_LOCATION
@@ -196,14 +195,12 @@ class SaveReminderFragment : BaseFragment() {
                     }.show()
             }
         }
-
         locationSettingsResponseTask.addOnCompleteListener { response ->
             if (response.isSuccessful) {
                 addGeofenceForReminder()
             }
         }
     }
-
     private fun checkPermissionsAndStartGeofencing() {
         //if we got the premessions we are raedy to go for the next step to chek for location and adding the geofince
         if (foregroundAndBackgroundLocationPermissionApproved()) {
@@ -213,7 +210,6 @@ class SaveReminderFragment : BaseFragment() {
             requestForegroundAndBackgroundLocationPermissions()
         }
     }
-
     @SuppressLint("MissingPermission")
     private fun addGeofenceForReminder() {
 
@@ -248,7 +244,6 @@ class SaveReminderFragment : BaseFragment() {
             }
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         //make sure to clear the view model after destroy, as it's a single view model.

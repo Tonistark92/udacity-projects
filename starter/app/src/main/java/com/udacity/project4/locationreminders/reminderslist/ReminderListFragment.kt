@@ -93,6 +93,7 @@ class ReminderListFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // handeling the click on the menu logout button and signout with authui
         when (item.itemId) {
             R.id.logout -> {
                 viewModel.authenticationState.observe(
@@ -108,12 +109,11 @@ class ReminderListFragment : BaseFragment() {
             }
         }
         return super.onOptionsItemSelected(item)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-//        display logout as menu item
+//        display the logout menu
         inflater.inflate(R.menu.main_menu, menu)
     }
 

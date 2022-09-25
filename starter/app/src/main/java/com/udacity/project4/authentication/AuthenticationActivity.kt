@@ -21,7 +21,9 @@ import com.udacity.project4.locationreminders.RemindersActivity
 class AuthenticationActivity : AppCompatActivity() {
     private val viewModel by viewModels<AuthViewModel>()
     companion object {
+        // the tag for log
         const val TAG = "AuthenticationActivity"
+        // the code for sign in
         const val SIGN_IN_RESULT_CODE = 3001
     }
 
@@ -30,6 +32,7 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewModel.authenticationState.observe(this, Observer { authenticationState ->
             when (authenticationState) {
+                //if he authanticated in the past so we navigate to the reminderactivity
                 AuthViewModel.AuthenticationState.AUTHENTICATED -> {
                     val i = Intent(this@AuthenticationActivity, RemindersActivity::class.java)
                     startActivity(i)
@@ -37,13 +40,13 @@ class AuthenticationActivity : AppCompatActivity() {
             }
         })
         homeBinding = DataBindingUtil.setContentView(this, R.layout.activity_authentication)
-        homeBinding.loginButton.setOnClickListener { launchSignInFlow() }
+        homeBinding.loginButton.setOnClickListener { signInFlow() }
     }
 
 
 
-    private fun launchSignInFlow() {
-        // Give users the option to sign in email or Google account. If users
+    private fun signInFlow() {
+        // Give users the option to sign in email or Google account
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(), AuthUI.IdpConfig.GoogleBuilder().build()
         )
