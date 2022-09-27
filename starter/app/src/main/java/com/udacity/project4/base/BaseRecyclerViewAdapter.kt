@@ -1,5 +1,4 @@
 package com.udacity.project4.base
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -67,4 +66,3 @@ abstract class BaseRecyclerViewAdapter<T>(private val callback: ((item: T) -> Un
         return null
     }
 }
-

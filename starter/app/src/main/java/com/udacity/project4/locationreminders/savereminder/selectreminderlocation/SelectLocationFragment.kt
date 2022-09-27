@@ -46,6 +46,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentSelectLocationBinding
     private val TAG = SelectLocationFragment::class.java.simpleName
     private lateinit var Poi: PointOfInterest
+    private  var normalLocation: Boolean =false
 
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -105,29 +106,24 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         //to be able to add marker for poi
         setPoiClickListener(map)
         // to be abel to add normal marker
-        setLocationClick(map)
+//        setLocationClick(map)
         // listener for the save button
         AfterLocationPinned()
+        // handling and saving the non poi location
+        setMapLongClick(map)
 
     }
 
     private fun isPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) === PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
     }
 
     private fun enableUserLocation() {
         if (isPermissionGranted()) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+            {
                 // here to request the missing permissions, and
                 // the onRequestPermissionsResult(int requestCode, String[] permissions,int[] grantResults)
                 // to handle the case where the user grants the permission
@@ -162,6 +158,30 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             }
         }
 
+    }
+    private fun setMapLongClick(map:GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+
+            map.clear()
+            val snippet = String.format(
+                Locale.getDefault(),
+                "Lat: %1$.5f, Long: %2$.5f",
+                latLng.latitude,
+                latLng.longitude
+            )
+            map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(snippet)
+            )
+            _viewModel.latitude.value = latLng.latitude
+            _viewModel.longitude.value = latLng.longitude
+            _viewModel.reminderSelectedLocationStr.value = snippet
+            normalLocation= true
+
+
+            //  onLocationSelected()
+        }
     }
     private fun setPoiClickListener(map: GoogleMap) {
         // Listener for the POI on the map
@@ -218,20 +238,19 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                 _viewModel.longitude.value = Poi.latLng.longitude
                 _viewModel.reminderSelectedLocationStr.value = Poi.name
                 _viewModel.selectedPOI.value = Poi
-                _viewModel.navigationCommand.value =
-                    NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
-            } else {
+                _viewModel.navigationCommand.value = NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
+            }
+            else if(normalLocation ){
+                _viewModel.navigationCommand.value = NavigationCommand.To(SelectLocationFragmentDirections.actionSelectLocationFragmentToSaveReminderFragment())
+            }
+            else {
                 Toast.makeText(context, "Please select a location", Toast.LENGTH_LONG).show()
             }
 
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Check if location permissions are granted and if so enable the location
 
@@ -270,10 +289,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             )
 
             if (!success) {
-                Log.e(TAG, "Style parsing failed.")
+//                Log.e(TAG, "Style parsing failed.")
             }
         } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't find style. Error: ", e)
+            Log.e(TAG, "Can't find The style. Error: ", e)
         }
     }
 

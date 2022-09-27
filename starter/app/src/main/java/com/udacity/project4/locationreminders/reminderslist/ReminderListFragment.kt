@@ -5,12 +5,9 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationActivity
-import com.udacity.project4.authentication.AuthViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
@@ -22,10 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class ReminderListFragment : BaseFragment() {
     //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
-    private val viewModel by viewModels<AuthViewModel>()
     private lateinit var binding: FragmentRemindersBinding
-    private val runningQOrLater =
-        android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,15 +40,11 @@ class ReminderListFragment : BaseFragment() {
         return binding.root
     }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = this
         setupRecyclerView()
-
         binding.addReminderFAB.setOnClickListener {
-            Toast.makeText(requireContext(), "LETS ADD REMINDER!!", Toast.LENGTH_SHORT).show()
             navigateToAddReminder()
         }
     }
@@ -74,16 +64,6 @@ class ReminderListFragment : BaseFragment() {
         )
     }
 
-    private fun navigateToBack() {
-//        _viewModel.navigationCommand.postValue(
-//            NavigationCommand.Back
-//        )
-        val i = Intent(activity, AuthenticationActivity::class.java)
-        startActivity(i)
-
-    }
-
-
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
         }
@@ -93,27 +73,26 @@ class ReminderListFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // handeling the click on the menu logout button and signout with authui
         when (item.itemId) {
             R.id.logout -> {
-                viewModel.authenticationState.observe(
-                    viewLifecycleOwner,
-                    Observer { authenticationState ->
-                        when (authenticationState) {
-                            AuthViewModel.AuthenticationState.AUTHENTICATED -> {
-                                AuthUI.getInstance().signOut(requireContext())
-                                navigateToBack()
-                            }
-                        }
-                    })
+                AuthUI.getInstance().signOut(requireContext()).addOnSuccessListener {
+                    val intent=Intent(requireContext(),AuthenticationActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                    requireActivity().finish()
+                }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(),"Logout faild",Toast.LENGTH_SHORT).show()
+                    }
             }
         }
         return super.onOptionsItemSelected(item)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-//        display the logout menu
+//        display logout as menu item
         inflater.inflate(R.menu.main_menu, menu)
     }
 

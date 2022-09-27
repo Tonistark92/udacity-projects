@@ -9,7 +9,7 @@ import com.udacity.project4.locationreminders.data.dto.Result
 // data so we need to return data and return error manually I used like a flag (using the boolean like switcher)
 // to switch between error and data mode we can't check on empty list we have test for the error empty data so should return an error
 class FakeDataSource(var tasks: MutableList<ReminderDTO>? = mutableListOf()) : ReminderDataSource {
-
+    // the switcher
     private var error = false
 
 
