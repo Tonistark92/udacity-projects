@@ -51,13 +51,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
                     return
                 }
             }
-            val foundIndex = GeofencingConstants.LANDMARK_DATA.indexOfFirst {
-                it.id == fenceId
-            }
-            if ( -1 == foundIndex ) {
-                Log.e("TAG", "Unknown Geofence: Abort Mission")
-                return
-            }
 
             sendNotification(geofencingEvent.triggeringGeofences!!)
         }

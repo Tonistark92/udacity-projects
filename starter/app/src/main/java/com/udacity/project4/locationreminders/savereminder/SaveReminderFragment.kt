@@ -175,7 +175,7 @@ class SaveReminderFragment : BaseFragment() {
 
     @SuppressLint("MissingPermission")
     private fun checkDeviceLocationSettingsAndStartGeofence(resolve:Boolean = true) {
-        Log.d("AAAAAA","checkDeviceLocationSettingsAndStartGeofence")
+        Log.d("geo","checkDeviceLocationSettingsAndStartGeofence")
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_LOW_POWER
         }
